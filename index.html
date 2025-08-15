@@ -1,23 +1,32 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enviar Email</title>
+<meta charset="UTF-8">
+<title>Formulário de Contato</title>
+<script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+<script>
+(function(){
+   emailjs.init("SEU_USER_ID"); // Substitua pelo seu User ID do EmailJS
+})();
+function enviarEmail(event) {
+    event.preventDefault();
+    emailjs.sendForm('SEU_SERVICE_ID', 'SEU_TEMPLATE_ID', event.target)
+    .then(function() {
+        alert("✅ E-mail enviado com sucesso!");
+        event.target.reset();
+    }, function(error) {
+        alert("❌ Falha ao enviar: " + JSON.stringify(error));
+    });
+}
+</script>
 </head>
 <body>
-    <h2>Envio de Email</h2>
-    <form action="enviar_email.php" method="POST">
-        <label for="nome">Nome:</label>
-        <input type="text" id="nome" name="nome" required><br><br>
-
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required><br><br>
-
-        <label for="mensagem">Mensagem:</label><br>
-        <textarea id="mensagem" name="mensagem" rows="4" cols="50" required></textarea><br><br>
-
-        <input type="submit" value="Enviar">
-    </form>
+<h2>Formulário de Contato</h2>
+<form onsubmit="enviarEmail(event)">
+    <input type="text" name="nome" placeholder="Seu nome" required><br><br>
+    <input type="email" name="email" placeholder="Seu e-mail" required><br><br>
+    <textarea name="mensagem" placeholder="Sua mensagem" required></textarea><br><br>
+    <button type="submit">Enviar</button>
+</form>
 </body>
 </html>
