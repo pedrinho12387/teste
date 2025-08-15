@@ -2,69 +2,46 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Cadastro e Login</title>
+<title>Contato</title>
+<script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+<script>
+(function(){
+   emailjs.init("SEU_USER_ID"); // substitua pelo seu User ID do EmailJS
+})();
+
+function enviarEmail(event) {
+    event.preventDefault();
+    const form = event.target;
+
+    emailjs.sendForm('SEU_SERVICE_ID', 'SEU_TEMPLATE_ID', form)
+    .then(() => {
+        document.getElementById("resposta").innerText = "✅ E-mail enviado com sucesso!";
+        form.reset();
+    }, (error) => {
+        document.getElementById("resposta").innerText = "❌ Falha ao enviar: " + error.text;
+    });
+}
+</script>
 <style>
     body { font-family: Arial, sans-serif; background: #f2f2f2; display: flex; justify-content: center; align-items: center; height: 100vh; }
-    .container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); width: 300px; }
-    h2 { text-align: center; }
-    input { width: 100%; padding: 8px; margin: 5px 0; }
-    button { width: 100%; padding: 8px; margin: 10px 0; cursor: pointer; }
+    .container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); width: 350px; }
+    input, textarea { width: 100%; padding: 10px; margin: 8px 0; border-radius: 4px; border: 1px solid #ccc; }
+    button { width: 100%; padding: 10px; border: none; border-radius: 4px; background: #4CAF50; color: white; cursor: pointer; font-size: 16px; }
+    button:hover { background: #45a049; }
     #resposta { text-align: center; margin-top: 10px; }
 </style>
 </head>
 <body>
 <div class="container">
-    <h2>Cadastro</h2>
-    <input type="text" id="cadastroUsuario" placeholder="Nome de usuário" required>
-    <input type="password" id="cadastroSenha" placeholder="Senha" required>
-    <button onclick="cadastrar()">Cadastrar</button>
-
-    <h2>Login</h2>
-    <input type="text" id="loginUsuario" placeholder="Nome de usuário" required>
-    <input type="password" id="loginSenha" placeholder="Senha" required>
-    <button onclick="login()">Login</button>
-
+    <h2>Entre em Contato</h2>
+    <form onsubmit="enviarEmail(event)">
+        <input type="text" name="user_name" placeholder="Seu nome" required>
+        <input type="email" name="user_email" placeholder="Seu e-mail" required>
+        <textarea name="message" placeholder="Sua mensagem" rows="5" required></textarea>
+        <button type="submit">Enviar</button>
+    </form>
     <p id="resposta"></p>
 </div>
-
-<script>
-function cadastrar() {
-    const usuario = document.getElementById('cadastroUsuario').value.trim();
-    const senha = document.getElementById('cadastroSenha').value;
-
-    if(!usuario || !senha) {
-        document.getElementById('resposta').innerText = "❌ Preencha todos os campos!";
-        return;
-    }
-
-    let usuarios = JSON.parse(localStorage.getItem('usuarios')) || {};
-
-    if(usuarios[usuario]) {
-        document.getElementById('resposta').innerText = "❌ Usuário já existe!";
-        return;
-    }
-
-    usuarios[usuario] = senha; // armazena a senha (não segura, apenas para aprendizado)
-    localStorage.setItem('usuarios', JSON.stringify(usuarios));
-    document.getElementById('resposta').innerText = "✅ Cadastro realizado com sucesso!";
-    document.getElementById('cadastroUsuario').value = '';
-    document.getElementById('cadastroSenha').value = '';
-}
-
-function login() {
-    const usuario = document.getElementById('loginUsuario').value.trim();
-    const senha = document.getElementById('loginSenha').value;
-
-    let usuarios = JSON.parse(localStorage.getItem('usuarios')) || {};
-
-    if(usuarios[usuario] && usuarios[usuario] === senha) {
-        document.getElementById('resposta').innerText = `✅ Bem-vindo, ${usuario}!`;
-        // Aqui você pode redirecionar para outra página:
-        // window.location.href = "pagina_interna.html";
-    } else {
-        document.getElementById('resposta').innerText = "❌ Usuário ou senha incorretos!";
-    }
-}
-</script>
 </body>
 </html>
+
