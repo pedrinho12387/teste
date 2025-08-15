@@ -2,31 +2,69 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Formulário de Contato</title>
-<script src="https://cdn.emailjs.com/dist/email.min.js"></script>
-<script>
-(function(){
-   emailjs.init("00001100729926sp@al.educacao.sp.gov.br"); // Substitua pelo seu User ID do EmailJS
-})();
-function enviarEmail(event) {
-    event.preventDefault();
-    emailjs.sendForm('SEU_SERVICE_ID', 'SEU_TEMPLATE_ID', event.target)
-    .then(function() {
-        alert("✅ E-mail enviado com sucesso!");
-        event.target.reset();
-    }, function(error) {
-        alert("❌ Falha ao enviar: " + JSON.stringify(error));
-    });
-}
-</script>
+<title>Cadastro e Login</title>
+<style>
+    body { font-family: Arial, sans-serif; background: #f2f2f2; display: flex; justify-content: center; align-items: center; height: 100vh; }
+    .container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); width: 300px; }
+    h2 { text-align: center; }
+    input { width: 100%; padding: 8px; margin: 5px 0; }
+    button { width: 100%; padding: 8px; margin: 10px 0; cursor: pointer; }
+    #resposta { text-align: center; margin-top: 10px; }
+</style>
 </head>
 <body>
-<h2>Formulário de Contato</h2>
-<form onsubmit="enviarEmail(event)">
-    <input type="text" name="nome" placeholder="Seu nome" required><br><br>
-    <input type="email" name="email" placeholder="Seu e-mail" required><br><br>
-    <textarea name="mensagem" placeholder="Sua mensagem" required></textarea><br><br>
-    <button type="submit">Enviar</button>
-</form>
+<div class="container">
+    <h2>Cadastro</h2>
+    <input type="text" id="cadastroUsuario" placeholder="Nome de usuário" required>
+    <input type="password" id="cadastroSenha" placeholder="Senha" required>
+    <button onclick="cadastrar()">Cadastrar</button>
+
+    <h2>Login</h2>
+    <input type="text" id="loginUsuario" placeholder="Nome de usuário" required>
+    <input type="password" id="loginSenha" placeholder="Senha" required>
+    <button onclick="login()">Login</button>
+
+    <p id="resposta"></p>
+</div>
+
+<script>
+function cadastrar() {
+    const usuario = document.getElementById('cadastroUsuario').value.trim();
+    const senha = document.getElementById('cadastroSenha').value;
+
+    if(!usuario || !senha) {
+        document.getElementById('resposta').innerText = "❌ Preencha todos os campos!";
+        return;
+    }
+
+    let usuarios = JSON.parse(localStorage.getItem('usuarios')) || {};
+
+    if(usuarios[usuario]) {
+        document.getElementById('resposta').innerText = "❌ Usuário já existe!";
+        return;
+    }
+
+    usuarios[usuario] = senha; // armazena a senha (não segura, apenas para aprendizado)
+    localStorage.setItem('usuarios', JSON.stringify(usuarios));
+    document.getElementById('resposta').innerText = "✅ Cadastro realizado com sucesso!";
+    document.getElementById('cadastroUsuario').value = '';
+    document.getElementById('cadastroSenha').value = '';
+}
+
+function login() {
+    const usuario = document.getElementById('loginUsuario').value.trim();
+    const senha = document.getElementById('loginSenha').value;
+
+    let usuarios = JSON.parse(localStorage.getItem('usuarios')) || {};
+
+    if(usuarios[usuario] && usuarios[usuario] === senha) {
+        document.getElementById('resposta').innerText = `✅ Bem-vindo, ${usuario}!`;
+        // Aqui você pode redirecionar para outra página:
+        // window.location.href = "pagina_interna.html";
+    } else {
+        document.getElementById('resposta').innerText = "❌ Usuário ou senha incorretos!";
+    }
+}
+</script>
 </body>
 </html>
